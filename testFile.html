@@ -1,0 +1,71 @@
+<!-- This program parses a numerical expression as it would be read from the HTML input element's
+value attribute. When read by javascript, the expression is not an array, but a javascript string 
+that will be called inputStr, which in this example is '3+(8+4)+5+(7+(1+8)+5+1)+3+(1+1)+1'. With 
+javascript's split() applied to inputStr we get an array, each of whose elements is a character that 
+is in the list 0,1,2,3,4,5,6,7,8,9,+,-,*,/,(,). To perform the arithmetic operations in the correct 
+order, the program locates the first ")", i.e. finds its index number, and then locates the nearest 
+preceding "(". The pair of parentheses, together with the in-between elements, are then replaced    
+with an array whose elements include only the in-between characters. The subarray becomes an element
+of the original array, with the aid of javascript's splice() function. Passes through this step repeat
+until all parentheses have been removed. N.B. This  program version doesn't do the calculations,
+but the next version should; because as each matching pair of parentheses are recognized, there is
+an opportunity to calculate a number and splice that number as the new element of the original   
+array, instead of splicing the subarray into it. The parentheses are gone with N passes for N
+matching-parentheses pairs. The calculation of the over-all expression is then possible using only
+operator-precedence rules, which is the focus of the next program version.. -->
+<!DOCTYPE html> <html> <head>
+<style>
+  .column {   
+     float: left;
+     width: 14%;
+     margin-left: 5%;
+          }
+</style>               
+<body>                           
+ <div class= "column">
+   <p id="results0">output0</p>
+ </div>
+ <div class= "column">
+   <p id="results1">output1</p>
+ </div>
+ <div class= "column">
+   <p id="results2">output2</p>
+ </div>
+ <div class= "column">
+   <p id="results3">output3</p>
+ </div>
+ <div class= "column">
+   <p id="results4">output4</p>
+ </div>
+<script>  
+let inputStr = '3+(8+4)+5+(7+(1+8)+5+1)+3+(1+1)+1';
+function arrayInitial(str) {
+ let array1 = str.split("");
+ return array1;
+}
+let rightI = 0;
+let leftI = 0;
+let arrayR = []; let arrayM = []; let arrayL = []; let arrayLR = []; let arrayN = [];
+let arrayIn = arrayInitial(inputStr) ;
+let k=0; let text = "";
+ text += "arrayInitial" + "<br>" + "has no arrays" + "<br>"
+ + "as elements." + "<br>" + "index from 0:" + "<br>";
+for (let j=0;j<arrayIn.length;j++) {text += "<br>" + arrayIn[j];}
+document.getElementById(`results${k}`).innerHTML = text;
+while ( (k<=7) && (arrayIn.indexOf(")") !== -1) ) {
+ rightI = arrayIn.indexOf(")");
+ leftI = arrayIn.lastIndexOf("(",rightI);
+ arrayR = arrayIn.slice(rightI + 1, arrayIn.length);
+ arrayM = arrayIn.slice(leftI+1,rightI);
+ arrayL = arrayIn.slice(0,leftI);
+ arrayLR = [].concat(arrayL,"^",arrayR);
+ arrayN = arrayLR.splice(arrayLR.indexOf("^"),1,arrayM); 
+ arrayIn = arrayLR;
+ k = k + 1;
+ let text = "";
+ text += "pass " + k + " found" + "<br>" + "'(' & ')' at: " + "<br>"
+ + "indexes " + leftI + " & " + rightI + "<br>" + "resulting in:" + "<br>";
+ for (let j=0;j<arrayIn.length;j++) {text += "<br>" + arrayIn[j];}
+ document.getElementById(`results${k}`).innerHTML = text;
+}
+</script> </body> </html>
